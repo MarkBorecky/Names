@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- Vaadin project from https://start.vaadin.com/project/370cee4b-9081-483c-a2d0-d6cc16e91532 -->
     <groupId>com.example.application</groupId>
-    <artifactId>myapp</artifactId>
+    <artifactId>Names</artifactId>
     <name>Project base for Spring Boot and Vaadin Flow</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -173,6 +173,21 @@
             <artifactId>webdrivermanager</artifactId>
             <version>3.8.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.miachm.sods</groupId>
+            <artifactId>SODS</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 
