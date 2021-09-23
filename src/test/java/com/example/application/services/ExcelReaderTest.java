@@ -16,6 +16,7 @@ public class ExcelReaderTest {
 
     final static String XLS_FILE = "./src/test/resources/test.xls";
     final static String ODS_FILE = "./src/test/resources/test.ods";
+    final static String ODS_BIG_FILE = "./src/test/resources/Baza_dr.ods";
 
     @Test
     public void shouldReturnODSReader() {
@@ -51,5 +52,20 @@ public class ExcelReaderTest {
         }
         assertTrue(result.size() == 1);
         assertTrue(result.get(0).getName().equals("name"));
+    }
+
+    @Test
+    public void readODSBigFile() {
+        List<DataDao> result = new ArrayList<>();
+        reader = new ODSReader();
+        try {
+            result = reader.read(ODS_BIG_FILE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidFormatException e) {
+            e.printStackTrace();
+        }
+        assertEquals(5275, result.size());
+        assertEquals("Василій", result.get(599).getName());
     }
 }

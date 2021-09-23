@@ -1,15 +1,20 @@
 package com.example.application.data.entity;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 public class DataConverter {
 
     enum DataField {
-        ID("id", "id"),
+        ID("_id", "id"),
         NAME("name","imię"),
         SURNAME("surname","nazwisko"),
         PATRONUS("patronus","patronimikum"),
@@ -34,13 +39,13 @@ public class DataConverter {
         for (DataField df : DataField.values())
             if (name.equals(df.columnName))
                 return df.objectField;
-        throw new IllegalArgumentException(name);
+        return StringUtils.EMPTY;
     }
 
-    public static DataDao someMethod(Object[] header, Object[] row) {
+    public static DataDao readDataDao(Object[] header, Object[] row) {
         var map = createMap(header, row);
         return new DataDao.Builder()
-                .id(Double.valueOf(map.get(DataField.ID.objectField)).intValue())
+                ._id(intValue(map.get(DataField.ID.objectField)))
                 .name(map.get(DataField.NAME.objectField))
                 .surname(map.get(DataField.SURNAME.objectField))
                 .patronus(map.get(DataField.PATRONUS.objectField))
@@ -48,26 +53,46 @@ public class DataConverter {
                 .uyezd(map.get(DataField.UYEZD.objectField))
                 .selo(map.get(DataField.SELO.objectField))
                 .fatherOccupation(map.get(DataField.FATHER_OCCUPATION.objectField))
-                .number(Double.valueOf(map.get(DataField.NUMBER.objectField)).intValue())
+                .number(intValue(map.get(DataField.NUMBER.objectField)))
                 .school(map.get(DataField.SCHOOL.objectField))
-                .year(Double.valueOf(map.get(DataField.YEAR.objectField)).intValue())
+                .year(intValue(map.get(DataField.YEAR.objectField)))
                 .build();
+    }
+
+    public static int intValue(String s) {
+        return s.equals(StringUtils.EMPTY) ? 0 : Double.valueOf(s).intValue();
     }
 
     public static List<DataDao> getDataDaoList(Object[][] values) {
         Object[] header = values[0];
         return Arrays.stream(values)
                 .skip(1)
-                .map(row -> DataConverter.someMethod(header, row))
+                .filter(isNullRow())
+                .map(row -> DataConverter.readDataDao(header, row))
                 .collect(Collectors.toList());
+    }
+
+    public static Predicate<Object[]> isNullRow() {
+        return row -> Arrays.stream(row)
+                .map(cell -> cell != null)
+                .reduce(false, (a,b) -> a || b );
     }
 
     private static Map<String, String> createMap(Object[] header, Object[] row) {
         var map = new HashMap<String, String>();
         for (int i=0; i<header.length; i++) {
-            var key = getFieldName(header[i].toString());
-            map.put(key, row[i].toString());
+            var key = getFieldName(getString(header[i]));
+            if (key.equals(StringUtils.EMPTY))
+                break;
+            map.put(key, getString(row[i]));
         }
         return map;
+    }
+
+    private static String getString(Object o) {
+        if (isNull(o))
+            return StringUtils.EMPTY;
+        else
+            return o.toString();
     }
 }

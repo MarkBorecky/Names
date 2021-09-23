@@ -1,9 +1,13 @@
 package com.example.application.data.entity;
 
-public class DataDao {
-    // id	imię	nazwisko	patronimikum	gubernia	ujezd	sioło	zawód ojca	NUMER	Szkoła	Rok
+import com.example.application.data.AbstractEntity;
 
-    private int id;
+import javax.persistence.Entity;
+
+@Entity
+public class DataDao extends AbstractEntity {
+
+    private int _id;
     private String name;
     private String surname;
     private String patronus;
@@ -17,7 +21,7 @@ public class DataDao {
 
     public static class Builder {
 
-        private int id;
+        private int _id;
         private String name;
         private String surname;
         private String patronus;
@@ -33,7 +37,7 @@ public class DataDao {
         }
 
         Builder(int id, String name, String surname, String patronus, String goverment, String uyezd, String selo, String fatherOccupation, int number, String school, int year) {
-            this.id = id;
+            this._id = id;
             this.name = name;
             this.surname = surname;
             this.patronus = patronus;
@@ -46,8 +50,8 @@ public class DataDao {
             this.year = year;
         }
 
-        public Builder id(int id){
-            this.id = id;
+        public Builder _id(int id){
+            this._id = id;
             return Builder.this;
         }
 
@@ -148,7 +152,7 @@ public class DataDao {
     }
 
     private DataDao(Builder builder) {
-        this.id = builder.id;
+        this._id = builder._id;
         this.name = builder.name;
         this.surname = builder.surname;
         this.patronus = builder.patronus;
@@ -164,7 +168,7 @@ public class DataDao {
     @Override
     public String toString() {
         return "DataDao{" +
-                "id=" + id +
+                "_id=" + _id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", patronus='" + patronus + '\'' +
@@ -178,8 +182,8 @@ public class DataDao {
                 '}';
     }
 
-    public int getId() {
-        return id;
+    public int get_id() {
+        return _id;
     }
 
     public String getName() {
@@ -220,5 +224,49 @@ public class DataDao {
 
     public int getYear() {
         return year;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setPatronus(String patronus) {
+        this.patronus = patronus;
+    }
+
+    public void setGoverment(String goverment) {
+        this.goverment = goverment;
+    }
+
+    public void setUyezd(String uyezd) {
+        this.uyezd = uyezd;
+    }
+
+    public void setSelo(String selo) {
+        this.selo = selo;
+    }
+
+    public void setFatherOccupation(String fatherOccupation) {
+        this.fatherOccupation = fatherOccupation;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }
