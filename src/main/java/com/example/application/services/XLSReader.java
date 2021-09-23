@@ -1,74 +1,46 @@
 package com.example.application.services;
 
+import com.example.application.data.entity.DataConverter;
+import com.example.application.data.entity.DataDao;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.List;
 
-public class XLSReader implements FileReader{
+public class XLSReader implements FileReader {
     @Override
-    public boolean read(String fileName) throws IOException, InvalidFormatException {
+    public List<DataDao> read(String fileName) throws IOException {
+        var dataFormatter = new DataFormatter();
         var file = readFile(fileName);
-        var workbook = WorkbookFactory.create(file);
+        var values = getValues(file, dataFormatter);
+        return DataConverter.getDataDaoList(values);
+    }
 
-        System.out.println("Workbook has " + workbook.getNumberOfSheets() + " Sheets : ");
+    private Object[][] getValues(File file, DataFormatter dataFormatter) throws IOException {
+        Object[][] values;
+        try (var workbook = WorkbookFactory.create(file)) {
+            var sheet = workbook.getSheetAt(0);
+            var rowNumber = sheet.getPhysicalNumberOfRows();
+            var columnNumber = sheet.getRow(0).getPhysicalNumberOfCells();
+            values = new Object[rowNumber][columnNumber];
 
-        Iterator<Sheet> sheetIterator = workbook.sheetIterator();
-        System.out.println("Retrieving Sheets using Iterator");
-        while (sheetIterator.hasNext()) {
-            Sheet sheet = sheetIterator.next();
-            System.out.println("=> " + sheet.getSheetName());
-        }
-
-        System.out.println("Retrieving Sheets using for-each loop");
-        for(Sheet sheet: workbook) {
-            System.out.println("=> " + sheet.getSheetName());
-        }
-
-        System.out.println("Retrieving Sheets using Java 8 forEach with lambda");
-        workbook.forEach(sheet -> {
-            System.out.println("=> " + sheet.getSheetName());
-        });
-
-        Sheet sheet = workbook.getSheetAt(0);
-
-        DataFormatter dataFormatter = new DataFormatter();
-
-        System.out.println("\n\nIterating over Rows and Columns using Iterator\n");
-        Iterator<Row> rowIterator = sheet.rowIterator();
-        while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
-
-            Iterator<Cell> cellIterator = row.cellIterator();
-
-            while (cellIterator.hasNext()) {
-                Cell cell = cellIterator.next();
-                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cellValue + "\t");
+            int irow = 0;
+            for (Row row : sheet) {
+                int icol = 0;
+                for (Cell cell : row) {
+                    values[irow][icol] = dataFormatter.formatCellValue(cell);
+                    icol++;
+                }
+                irow++;
             }
-            System.out.println();
+        } catch (InvalidFormatException e) {
+            throw new IllegalArgumentException();
         }
-
-        System.out.println("\n\nIterating over Rows and Columns using for-each loop\n");
-        for (Row row: sheet) {
-            for(Cell cell: row) {
-                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cellValue + "\t");
-            }
-            System.out.println();
-        }
-
-        System.out.println("\n\nIterating over Rows and Columns using Java 8 forEach with lambda\n");
-        sheet.forEach(row -> {
-            row.forEach(cell -> {
-                String cellValue = dataFormatter.formatCellValue(cell);
-                System.out.print(cellValue + "\t");
-            });
-            System.out.println();
-        });
-
-        workbook.close();
-
-        return true;
+        return values;
     }
 }
