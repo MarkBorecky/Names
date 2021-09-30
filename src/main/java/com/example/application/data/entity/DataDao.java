@@ -19,6 +19,8 @@ public class DataDao extends AbstractEntity {
     private String school;
     private int year;
 
+    public DataDao() {}
+
     public static class Builder {
 
         private int _id;
