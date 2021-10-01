@@ -24,4 +24,19 @@ public class DataDaoService extends CrudService<DataDao, Integer> {
     public List<DataDao> getAll() {
         return repository.findAll();
     }
+
+	public List<DataDao> getAll(
+	        String name,
+            String surname,
+            String patronus,
+            String goverment,
+            String uyezd,
+            String selo,
+            String fatherOccupation,
+            String number,
+            String school,
+            String year) {
+        return repository.findAll(
+                name, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, year);
+	}
 }
