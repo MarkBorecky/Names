@@ -27,7 +27,7 @@ public class ExcelReaderTest {
         assertTrue(reader instanceof ODSReader);
     }
 
-    @Test
+  /*  @Test
     public void readXLSX() {
         List<Person> result = new ArrayList<>();
         reader = new XLSXReader();
@@ -42,7 +42,7 @@ public class ExcelReaderTest {
         assertEquals(1, result.size());
         assertEquals("Doe", result.get(0).getSurname());
         assertEquals(StringUtils.EMPTY, result.get(0).getName());
-    }
+    }*/
 
     @Test
     public void readXLS() {
