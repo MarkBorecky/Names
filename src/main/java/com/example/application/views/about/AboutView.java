@@ -4,6 +4,7 @@ import com.example.application.data.entity.Person;
 import com.example.application.data.service.PersonService;
 import com.example.application.services.ExcelFileWriter;
 import com.example.application.services.ODSWriter;
+import com.example.application.utils.StringUtils;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -27,7 +28,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,7 +36,8 @@ import java.util.List;
 
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
-public class AboutView extends Div implements BeforeEnterObserver {
+public class
+AboutView extends Div implements BeforeEnterObserver {
 
 	private Grid<Person> grid = new Grid<>();
 	private List<Person> people = new ArrayList<>();
@@ -46,15 +47,25 @@ public class AboutView extends Div implements BeforeEnterObserver {
 	private int results = 0;
 
 	TextField name = new TextField("Imię");
+	long nameAmount = 0;
 	TextField surname = new TextField("Nazwisko");
+	int surnameAmount = 0;
 	TextField patronus = new TextField("Imię ojca");
+	int patronusAmount = 0;
 	TextField goverment = new TextField("Gubernia");
+	int govermentAmount = 0;
 	TextField uyezd = new TextField("Ujazd");
+	int uyezdAmount = 0;
 	TextField selo = new TextField("Sioło");
+	int seloAmount = 0;
 	TextField fatherOccupation = new TextField("Zawód ojca");
+	int fatherOccupationAmount = 0;
 	TextField number = new TextField("Numer");
+	int numberAmount = 0;
 	TextField school = new TextField("Szkoła");
+	int schoolAmount = 0;
 	TextField rok = new TextField("Rok");
+	int rokAmount = 0;
 
 	String resultString = "Znaleziono wyników %d";
 	H3 resultText = new H3(String.format(resultString, results));
@@ -74,6 +85,22 @@ public class AboutView extends Div implements BeforeEnterObserver {
 		configureGrid(all);
 	}
 
+	private long getNumberDistinctValues(List<Person> all, ValueProvider<Person, String> getter) {
+		return all.stream()
+				.map(getter)
+				.filter(StringUtils::isNotEmpty)
+				.distinct()
+				.count();
+	}
+
+	private long getNumberDistinctValues2(List<Person> all, ValueProvider<Person, Integer> getter) {
+		return all.stream()
+				.map(getter)
+				.filter(StringUtils::isNotEmpty)
+				.distinct()
+				.count();
+	}
+
 	private void setButtonSearchForm() {
 		button = new Button("formularz", e -> {
 			form.setVisible((formVisible = !formVisible));
@@ -89,19 +116,24 @@ public class AboutView extends Div implements BeforeEnterObserver {
 	private void configureGrid(List<Person> all) {
 		people = all;
 		grid.setItems(all);
-		addColumn(Person::getName, "Imię");
-		addColumn(Person::getSurname, "Nazwisko");
-		addColumn(Person::getPatronus, "Imię ojca");
-		addColumn(Person::getGoverment, "Gubernia");
-		addColumn(Person::getUyezd, "Ujazd");
-		addColumn(Person::getSelo, "Sioło");
-		addColumn(Person::getFatherOccupation, "Zawód ojca");
-		addColumnInt(Person::getNumber, "Numer");
-		addColumn(Person::getSchool, "Szkoła");
-		addColumnInt(Person::getYear, "Rok");
+		addColumn(all, "Imię", Person::getName);
+		addColumn(all, "Nazwisko", Person::getSurname);
+		addColumn(all, "Imię ojca", Person::getPatronus);
+		addColumn(all, "Gubernia", Person::getGoverment);
+		addColumn(all, "Ujazd", Person::getUyezd);
+		addColumn(all, "Sioło", Person::getSelo);
+		addColumn(all, "Zawód", Person::getFatherOccupation);
+		addColumnInt(all, "Numer", Person::getNumber);
+		addColumn(all, "Szkoła", Person::getSchool);
+		addColumnInt(all, "Rok", Person::getYear);
+
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 		grid.setHeightFull();
 		add(grid);
+	}
+
+	private void addColumn(List<Person> all, String columnName, ValueProvider<Person, String> getter) {
+		addColumn(getter, String.format("%s (%d)\n", columnName, getNumberDistinctValues(all, getter)));
 	}
 
 	private void addColumn(ValueProvider<Person, String> provider, String header) {
@@ -110,6 +142,10 @@ public class AboutView extends Div implements BeforeEnterObserver {
 				.setComparator(Comparator.comparing(provider))
 				.setResizable(true)
 				.setWidth("250px");
+	}
+
+	private void addColumnInt(List<Person> all, String columnName, ValueProvider<Person, Integer> getter) {
+		addColumnInt(getter, String.format("%s (%d)\n", columnName, getNumberDistinctValues2(all, getter)));
 	}
 
 	private void addColumnInt(ValueProvider<Person, Integer> provider, String header) {
