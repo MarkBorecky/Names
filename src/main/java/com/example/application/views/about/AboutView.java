@@ -1,14 +1,19 @@
 package com.example.application.views.about;
 
-import com.example.application.data.entity.DataDao;
-import com.example.application.data.service.DataDaoService;
+import com.example.application.data.entity.Person;
+import com.example.application.data.service.PersonService;
+import com.example.application.services.ExcelFileWriter;
+import com.example.application.services.ODSWriter;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,7 +24,13 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,8 +38,10 @@ import java.util.List;
 @Route(value = "about", layout = MainLayout.class)
 public class AboutView extends Div implements BeforeEnterObserver {
 
-	private Grid<DataDao> grid = new Grid<>();
-	private DataDaoService dataDaoService;
+	private Grid<Person> grid = new Grid<>();
+	private List<Person> people = new ArrayList<>();
+	private PersonService personService;
+	private ExcelFileWriter writer;
 
 	private int results = 0;
 
@@ -50,11 +63,12 @@ public class AboutView extends Div implements BeforeEnterObserver {
 	boolean formVisible = true;
 	Button button = new Button();
 
-	public AboutView(@Autowired DataDaoService dataDaoService) {
-		this.dataDaoService = dataDaoService;
+	public AboutView(@Autowired PersonService personService) {
+		writer = new ODSWriter();
+		this.personService = personService;
 		setButtonSearchForm();
 		addClassNames("about-view", "flex", "flex-col", "h-full");
-		List<DataDao> all = dataDaoService.getAll();
+		List<Person> all = personService.getAll();
 		setResultText(all.size());
 		configureSearchForm();
 		configureGrid(all);
@@ -72,24 +86,25 @@ public class AboutView extends Div implements BeforeEnterObserver {
 		addSearchInput(name, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, rok);
 	}
 
-	private void configureGrid(List<DataDao> all) {
+	private void configureGrid(List<Person> all) {
+		people = all;
 		grid.setItems(all);
-		addColumn(DataDao::getName, "Imię");
-		addColumn(DataDao::getSurname, "Nazwisko");
-		addColumn(DataDao::getPatronus, "Imię ojca");
-		addColumn(DataDao::getGoverment, "Gubernia");
-		addColumn(DataDao::getUyezd, "Ujazd");
-		addColumn(DataDao::getSelo, "Sioło");
-		addColumn(DataDao::getFatherOccupation, "Zawód ojca");
-		addColumnInt(DataDao::getNumber, "Numer");
-		addColumn(DataDao::getSchool, "Szkoła");
-		addColumnInt(DataDao::getYear, "Rok");
+		addColumn(Person::getName, "Imię");
+		addColumn(Person::getSurname, "Nazwisko");
+		addColumn(Person::getPatronus, "Imię ojca");
+		addColumn(Person::getGoverment, "Gubernia");
+		addColumn(Person::getUyezd, "Ujazd");
+		addColumn(Person::getSelo, "Sioło");
+		addColumn(Person::getFatherOccupation, "Zawód ojca");
+		addColumnInt(Person::getNumber, "Numer");
+		addColumn(Person::getSchool, "Szkoła");
+		addColumnInt(Person::getYear, "Rok");
 		grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 		grid.setHeightFull();
 		add(grid);
 	}
 
-	private void addColumn(ValueProvider<DataDao, String> provider, String header) {
+	private void addColumn(ValueProvider<Person, String> provider, String header) {
 		grid.addColumn(provider)
 				.setHeader(header)
 				.setComparator(Comparator.comparing(provider))
@@ -97,7 +112,7 @@ public class AboutView extends Div implements BeforeEnterObserver {
 				.setWidth("250px");
 	}
 
-	private void addColumnInt(ValueProvider<DataDao, Integer> provider, String header) {
+	private void addColumnInt(ValueProvider<Person, Integer> provider, String header) {
 		grid.addColumn(provider)
 				.setHeader(header)
 				.setComparator(Comparator.comparing(provider))
@@ -105,7 +120,7 @@ public class AboutView extends Div implements BeforeEnterObserver {
 	}
 
 	public void updateList() {
-		List<DataDao> all = dataDaoService.getAll(
+		List<Person> all = personService.getAll(
 				name.getValue(),
 				surname.getValue(),
 				patronus.getValue(),
@@ -118,6 +133,7 @@ public class AboutView extends Div implements BeforeEnterObserver {
 				rok.getValue()
 		);
 		setResultText(all.size());
+		people = all;
 		grid.setItems(all);
 	}
 
@@ -143,8 +159,26 @@ public class AboutView extends Div implements BeforeEnterObserver {
 			}
 		}
 		form.add(layout);
-		form.add(new Button("pobierz wynik", e -> Notification.show("Pobieram wynik...")));
+		createDownloadButton();
 		add(form);
+	}
+
+	private void createDownloadButton() {
+		var name = "people.ods";
+		InputStream input = download(name);
+		Anchor download = new Anchor(new StreamResource(name, () -> download(name)), "");
+		download.getElement().setAttribute("download", true);
+		download.add(new Button("Pobierz", new Icon(VaadinIcon.DOWNLOAD_ALT)));
+		add(download);
+	}
+
+	private InputStream download(String name) {
+		try {
+			return writer.write(people, name);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

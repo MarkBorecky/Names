@@ -1,6 +1,6 @@
 package com.example.application.data.service;
 
-import com.example.application.data.entity.DataDao;
+import com.example.application.data.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.vaadin.artur.helpers.CrudService;
@@ -8,24 +8,24 @@ import org.vaadin.artur.helpers.CrudService;
 import java.util.List;
 
 @Service
-public class DataDaoService extends CrudService<DataDao, Integer> {
+public class PersonService extends CrudService<Person, Integer> {
 
-    private DataDaoRepository repository;
+    private PersonRepository repository;
 
-    public DataDaoService(@Autowired DataDaoRepository repository) {
+    public PersonService(@Autowired PersonRepository repository) {
         this.repository = repository;
     }
 
     @Override
-    protected DataDaoRepository getRepository() {
+    protected PersonRepository getRepository() {
         return repository;
     }
 
-    public List<DataDao> getAll() {
+    public List<Person> getAll() {
         return repository.findAll();
     }
 
-	public List<DataDao> getAll(
+	public List<Person> getAll(
 	        String name,
             String surname,
             String patronus,
@@ -38,5 +38,13 @@ public class DataDaoService extends CrudService<DataDao, Integer> {
             String year) {
         return repository.findAll(
                 name, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, year);
+	}
+
+	public void saveAll(List<Person> data) {
+		repository.saveAll(data);
+	}
+
+	public void deleteAll() {
+		repository.deleteAll();
 	}
 }

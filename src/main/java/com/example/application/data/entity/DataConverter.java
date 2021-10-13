@@ -2,6 +2,7 @@ package com.example.application.data.entity;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +43,9 @@ public class DataConverter {
         return StringUtils.EMPTY;
     }
 
-    public static DataDao readDataDao(Object[] header, Object[] row) {
+    public static Person readDataDao(Object[] header, Object[] row) {
         var map = createMap(header, row);
-        return new DataDao.Builder()
+        return new Person.Builder()
                 ._id(intValue(map.get(DataField.ID.objectField)))
                 .name(map.get(DataField.NAME.objectField))
                 .surname(map.get(DataField.SURNAME.objectField))
@@ -63,7 +64,7 @@ public class DataConverter {
         return s.equals(StringUtils.EMPTY) ? 0 : Double.valueOf(s).intValue();
     }
 
-    public static List<DataDao> getDataDaoList(Object[][] values) {
+    public static List<Person> getDataDaoList(Object[][] values) {
         Object[] header = values[0];
         return Arrays.stream(values)
                 .skip(1)
@@ -95,4 +96,32 @@ public class DataConverter {
         else
             return o.toString();
     }
+
+    public static List<String> getHeader() {
+        return Arrays.stream(DataField.values()).map(x->x.columnName).collect(Collectors.toList());
+    }
+
+    public static List<String> transferPeople(List<Person> people) {
+        return people.stream()
+                .map(DataConverter::convert)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private static List<String> convert(Person person) {
+        var list = new ArrayList<String>();
+        list.add(String.valueOf(person.get_id()));
+        list.add(person.getName());
+        list.add(person.getSurname());
+        list.add(person.getPatronus());
+        list.add(person.getGoverment());
+        list.add(person.getUyezd());
+        list.add(person.getSelo());
+        list.add(person.getFatherOccupation());
+        list.add(String.valueOf(person.getNumber()));
+        list.add(person.getSchool());
+        list.add(String.valueOf(person.getYear()));
+        return list;
+    }
+
 }

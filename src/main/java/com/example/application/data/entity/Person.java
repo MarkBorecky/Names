@@ -5,7 +5,7 @@ import com.example.application.data.AbstractEntity;
 import javax.persistence.Entity;
 
 @Entity
-public class DataDao extends AbstractEntity {
+public class Person extends AbstractEntity {
 
     private int _id;
     private String name;
@@ -19,7 +19,7 @@ public class DataDao extends AbstractEntity {
     private String school;
     private int year;
 
-    public DataDao() {}
+    public Person() {}
 
     public static class Builder {
 
@@ -107,7 +107,7 @@ public class DataDao extends AbstractEntity {
             return Builder.this;
         }
 
-        public DataDao build() {
+        public Person build() {
             if(this.name == null){
                 throw new NullPointerException("The property \"name\" is null. "
                         + "Please set the value by \"name()\". "
@@ -149,11 +149,11 @@ public class DataDao extends AbstractEntity {
                         + "The properties \"name\", \"surname\", \"patronus\", \"goverment\", \"uyezd\", \"selo\", \"fatherOccupation\" and \"school\" are required.");
             }
 
-            return new DataDao(this);
+            return new Person(this);
         }
     }
 
-    private DataDao(Builder builder) {
+    private Person(Builder builder) {
         this._id = builder._id;
         this.name = builder.name;
         this.surname = builder.surname;
