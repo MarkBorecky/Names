@@ -2,12 +2,14 @@ package com.example.application.data.entity;
 
 import com.example.application.data.AbstractEntity;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 @Entity
 public class Person extends AbstractEntity {
 
     private int _id;
+    @Embedded
     private Name name;
     private String surname;
     private String patronus;
@@ -193,7 +195,7 @@ public class Person extends AbstractEntity {
     }
 
     public String getMainName() {
-        return name.mainName();
+        return name.getMainName();
     }
 
     public String getNameToString() {

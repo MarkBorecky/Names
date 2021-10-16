@@ -12,7 +12,7 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
 	@Query(
 			"select p from Person p " +
-			"where lower(p.name) like lower(concat('%', :name, '%')) " +
+			"where lower(p.name.mainName) like lower(concat('%', :name, '%')) " +
 			"and lower(p.surname) like lower(concat('%', :surname, '%')) " +
 			"and lower(p.patronus) like lower(concat('%', :patronus, '%')) " +
 			"and lower(p.goverment) like lower(concat('%', :goverment, '%')) " +

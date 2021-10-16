@@ -1,6 +1,37 @@
 package com.example.application.data.entity;
 
-public record Name(String mainName, String originalName) {
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class Name {
+
+    private String mainName;
+    private String originalName;
+
+    public Name() {
+    }
+
+    public Name(String mainName, String originalName) {
+        this.mainName = mainName;
+        this.originalName = originalName;
+    }
+
+    public String getMainName() {
+        return mainName;
+    }
+
+    public void setMainName(String mainName) {
+        this.mainName = mainName;
+    }
+
+    public String getOriginalName() {
+        return originalName;
+    }
+
+    public void setOriginalName(String originalName) {
+        this.originalName = originalName;
+    }
+
     @Override
     public String toString() {
         return mainName.equals(originalName) ? mainName : String.format("%s (%s)",mainName, originalName);
