@@ -10,7 +10,7 @@ public class NamesConverterTest {
     public void shouldBeAleks() {
         var aleks = "АЛЕКСІЙ";
         var result = NamesConverter.getByAlternative(aleks);
-        assertEquals(NameAlternatives.ALEKSEJ, result);
+        assertEquals(NameAlternatives.АЛЕКСЕЙ, result);
     }
 
     @Test
