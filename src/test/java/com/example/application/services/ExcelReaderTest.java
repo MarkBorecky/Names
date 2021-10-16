@@ -57,7 +57,7 @@ public class ExcelReaderTest {
             e.printStackTrace();
         }
         assertEquals(1, result.size());
-        assertEquals("Александръ", result.get(0).getName());
+        assertEquals("Александръ", result.get(0).getMainName());
         assertEquals("Литовская Духовная Семинария", result.get(0).getSchool());
     }
 
@@ -74,7 +74,7 @@ public class ExcelReaderTest {
             e.printStackTrace();
         }
         assertTrue(result.size() == 1);
-        assertTrue(result.get(0).getName().equals("name"));
+        assertTrue(result.get(0).getMainName().equals("name"));
     }
 
     @Test
@@ -90,6 +90,6 @@ public class ExcelReaderTest {
             e.printStackTrace();
         }
         assertEquals(5275, result.size());
-        assertEquals("Василій", result.get(599).getName());
+        assertEquals("Василій", result.get(599).getMainName());
     }
 }

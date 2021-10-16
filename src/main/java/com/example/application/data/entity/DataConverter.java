@@ -111,7 +111,7 @@ public class DataConverter {
     private static List<String> convert(Person person) {
         var list = new ArrayList<String>();
         list.add(String.valueOf(person.get_id()));
-        list.add(person.getName());
+        list.add(person.getName().toString());
         list.add(person.getSurname());
         list.add(person.getPatronus());
         list.add(person.getGoverment());

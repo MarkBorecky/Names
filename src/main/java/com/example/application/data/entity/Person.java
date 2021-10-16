@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 public class Person extends AbstractEntity {
 
     private int _id;
-    private String name;
+    private Name name;
     private String surname;
     private String patronus;
     private String goverment;
@@ -24,7 +24,7 @@ public class Person extends AbstractEntity {
     public static class Builder {
 
         private int _id;
-        private String name;
+        private Name name;
         private String surname;
         private String patronus;
         private String goverment;
@@ -38,7 +38,7 @@ public class Person extends AbstractEntity {
         public Builder() {
         }
 
-        Builder(int id, String name, String surname, String patronus, String goverment, String uyezd, String selo, String fatherOccupation, int number, String school, int year) {
+        Builder(int id, Name name, String surname, String patronus, String goverment, String uyezd, String selo, String fatherOccupation, int number, String school, int year) {
             this._id = id;
             this.name = name;
             this.surname = surname;
@@ -58,7 +58,7 @@ public class Person extends AbstractEntity {
         }
 
         public Builder name(String name){
-            this.name = name;
+            this.name = new Name(NamesConverter.getByAlternative(name).getMainName(), name);
             return Builder.this;
         }
 
@@ -188,8 +188,16 @@ public class Person extends AbstractEntity {
         return _id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
+    }
+
+    public String getMainName() {
+        return name.mainName();
+    }
+
+    public String getNameToString() {
+        return name.toString();
     }
 
     public String getSurname() {
@@ -232,7 +240,7 @@ public class Person extends AbstractEntity {
         this._id = _id;
     }
 
-    public void setName(String name) {
+    public void setName(Name name) {
         this.name = name;
     }
 

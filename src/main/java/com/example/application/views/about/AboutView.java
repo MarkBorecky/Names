@@ -116,7 +116,7 @@ AboutView extends Div implements BeforeEnterObserver {
 	private void configureGrid(List<Person> all) {
 		people = all;
 		grid.setItems(all);
-		addColumn(all, "Imię", Person::getName);
+		addColumn(all, "Imię", Person::getNameToString);
 		addColumn(all, "Nazwisko", Person::getSurname);
 		addColumn(all, "Imię ojca", Person::getPatronus);
 		addColumn(all, "Gubernia", Person::getGoverment);
