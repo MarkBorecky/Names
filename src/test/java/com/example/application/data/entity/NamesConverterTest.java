@@ -28,4 +28,13 @@ public class NamesConverterTest {
         var result = NamesConverter.getByAlternative(name).getMainName();
         assertEquals(name, result);
     }
+
+    @Test
+    public void shouldBeNotEqual() {
+        var name1 = "Юліанъ";
+        var name2 = "Юлій";
+        var result1 = NamesConverter.getByAlternative(name1).getMainName();
+        var result2 = NamesConverter.getByAlternative(name2).getMainName();
+        assertNotEquals(result1, result2);
+    }
 }

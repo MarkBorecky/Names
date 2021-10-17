@@ -11,8 +11,8 @@ public class Name {
     public Name() {
     }
 
-    public Name(String mainName, String originalName) {
-        this.mainName = mainName;
+    public Name(String originalName) {
+        this.mainName = NamesConverter.getByAlternative(originalName).getMainName();
         this.originalName = originalName;
     }
 
@@ -34,6 +34,6 @@ public class Name {
 
     @Override
     public String toString() {
-        return mainName.equals(originalName) ? mainName : String.format("%s (%s)",mainName, originalName);
+        return mainName.equals(originalName) ? mainName : String.format("%s [%s]",mainName, originalName);
     }
 }

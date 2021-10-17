@@ -11,7 +11,8 @@ public class NamesConverter{
     public static final Map<String, NameAbstraction> names = createMap();
 
     public static NameAbstraction getByAlternative(String name) {
-        return Optional.ofNullable(names.get(name)).orElse(new NameWithoutAlternative(name));
+        return Optional.ofNullable(names.get(name.toUpperCase()
+        )).orElse(new NameWithoutAlternative(name));
     }
 
     private static Map<String, NameAbstraction> createMap() {

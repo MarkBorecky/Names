@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,5 +40,49 @@ public class DataConverterTest {
                 .filter(DataConverter.isNullRow())
                 .count();
         assertEquals(2, count);
+    }
+
+    @Test
+    public void shouldBeEquals() {
+        var flor = "Флоръ";
+        var result = new Name(flor);
+        assertEquals("ФЛОР [Флоръ]", result.toString());
+    }
+
+    @Test
+    public void shouldBeDiff() {
+        var flor = "Jan";
+        var result = new Name(flor);
+        assertEquals("Jan", result.toString());
+    }
+
+    @Test
+    public void shouldBeDiff2() {
+        var expected = "Jan";
+        var key = "Jan";
+        var result = NamesConverter.getByAlternative(key).getMainName();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void mapShouldBeFulfilled() {
+        Map<String, NameAbstraction> names = NamesConverter.names;
+        assertNotEquals(null, names);
+        assertNotEquals(0, names.size());
+    }
+
+    @Test
+    public void keysShouldBeEqual() {
+        var key1 = "ФЛОРЪ";
+        var key2 = "Флоръ";
+        assertEquals(key1, key2.toUpperCase());
+    }
+
+    @Test
+    public void keysShouldBeEqual2() {
+        var expected = "ФЛОР";
+        var key = "Флоръ";
+        var result = NamesConverter.names.get(key.toUpperCase()).getMainName();
+        assertEquals(expected, result);
     }
 }

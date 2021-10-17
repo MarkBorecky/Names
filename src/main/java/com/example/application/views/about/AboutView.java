@@ -31,44 +31,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.logging.Logger;
 
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
 public class
 AboutView extends Div implements BeforeEnterObserver {
 
-    Logger logger = Logger.getLogger(AboutView.class.getName());
-
-    private Grid<Person> grid = new Grid<>();
+    final private Grid<Person> grid = new Grid<>();
     private List<Person> people = new ArrayList<>();
-    private PersonService personService;
-    private ExcelFileWriter writer;
+    final private PersonService personService;
+    final private ExcelFileWriter writer;
 
     private int results = 0;
 
-    Map resultMap = new HashMap<String, Integer>();
+    Map<String, Long> resultMap = new HashMap();
 
     TextField name = new TextField("Imię");
-    long nameAmount = 0;
     TextField surname = new TextField("Nazwisko");
-    int surnameAmount = 0;
     TextField patronus = new TextField("Imię ojca");
-    int patronusAmount = 0;
     TextField goverment = new TextField("Gubernia");
-    int govermentAmount = 0;
     TextField uyezd = new TextField("Ujazd");
-    int uyezdAmount = 0;
     TextField selo = new TextField("Sioło");
-    int seloAmount = 0;
     TextField fatherOccupation = new TextField("Zawód ojca");
-    int fatherOccupationAmount = 0;
     TextField number = new TextField("Numer");
-    int numberAmount = 0;
     TextField school = new TextField("Szkoła");
-    int schoolAmount = 0;
     TextField rok = new TextField("Rok");
-    int rokAmount = 0;
 
     String resultString = "Znaleziono wyników %d";
     H3 resultText = new H3(String.format(resultString, results));

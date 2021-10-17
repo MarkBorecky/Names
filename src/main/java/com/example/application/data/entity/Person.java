@@ -60,7 +60,7 @@ public class Person extends AbstractEntity {
         }
 
         public Builder name(String name){
-            this.name = new Name(NamesConverter.getByAlternative(name).getMainName(), name);
+            this.name = new Name(name);
             return Builder.this;
         }
 
