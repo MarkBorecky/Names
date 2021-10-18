@@ -4,7 +4,6 @@ import com.example.application.data.entity.Person;
 import com.example.application.data.service.PersonService;
 import com.example.application.services.ExcelFileWriter;
 import com.example.application.services.ODSWriter;
-import com.example.application.utils.StringUtils;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -27,10 +26,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import static com.example.application.utils.PersonUtils.getNumberDistinctValues;
+import static com.example.application.utils.PersonUtils.getNumberDistinctValues2;
+import static com.example.application.utils.Headers.*;
 
 @PageTitle("About")
 @Route(value = "about", layout = MainLayout.class)
@@ -46,22 +47,23 @@ AboutView extends Div implements BeforeEnterObserver {
 
     Map<String, Long> resultMap = new HashMap();
 
-    TextField name = new TextField("Imię");
-    TextField surname = new TextField("Nazwisko");
-    TextField patronus = new TextField("Imię ojca");
-    TextField goverment = new TextField("Gubernia");
-    TextField uyezd = new TextField("Ujazd");
-    TextField selo = new TextField("Sioło");
-    TextField fatherOccupation = new TextField("Zawód ojca");
-    TextField number = new TextField("Numer");
-    TextField school = new TextField("Szkoła");
-    TextField rok = new TextField("Rok");
+    TextField mainName = new TextField(MAIN_NAME);
+    TextField originalName = new TextField(ORIGINAL_NAME);
+    TextField surname = new TextField(SURNAME);
+    TextField patronus = new TextField(PATRONUS);
+    TextField goverment = new TextField(GOVERMENT);
+    TextField uyezd = new TextField(UYEZD);
+    TextField selo = new TextField(SELO);
+    TextField fatherOccupation = new TextField(FATHER_OCCUPATION);
+    TextField number = new TextField(NUMBER);
+    TextField school = new TextField(SCHOOL);
+    TextField rok = new TextField(YEAR);
 
     String resultString = "Znaleziono wyników %d";
     H3 resultText = new H3(String.format(resultString, results));
 
     VerticalLayout form = new VerticalLayout();
-    boolean formVisible = true;
+    boolean formVisible = false;
     Button button = new Button();
 
     public AboutView(@Autowired PersonService personService) {
@@ -75,22 +77,6 @@ AboutView extends Div implements BeforeEnterObserver {
         configureGrid(all);
     }
 
-    private long getNumberDistinctValues(List<Person> all, ValueProvider<Person, String> getter) {
-        return all.stream()
-                .map(getter)
-                .filter(StringUtils::isNotEmpty)
-                .distinct()
-                .count();
-    }
-
-    private long getNumberDistinctValues2(List<Person> all, ValueProvider<Person, Integer> getter) {
-        return all.stream()
-                .map(getter)
-                .filter(StringUtils::isNotEmpty)
-                .distinct()
-                .count();
-    }
-
     private void setButtonSearchForm() {
         button = new Button("formularz", e -> {
             form.setVisible((formVisible = !formVisible));
@@ -100,23 +86,23 @@ AboutView extends Div implements BeforeEnterObserver {
     }
 
     private void configureSearchForm() {
-        addSearchInput(name, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, rok);
+        addSearchInput(mainName, originalName, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, rok);
     }
 
     private void configureGrid(List<Person> all) {
         people = all;
         grid.setItems(all);
-        addColumn(all, "Imię", Person::getNameToString);
-        addColumn(all, "Nazwisko", Person::getSurname);
-        addColumn(all, "Imię ojca", Person::getPatronus);
-        addColumn(all, "Gubernia", Person::getGoverment);
-        addColumn(all, "Ujazd", Person::getUyezd);
-        addColumn(all, "Sioło", Person::getSelo);
-        addColumn(all, "Zawód", Person::getFatherOccupation);
-        addColumnInt(all, "Numer", Person::getNumber);
-        addColumn(all, "Szkoła", Person::getSchool);
-        addColumnInt(all, "Rok", Person::getYear);
-
+        addColumn(all, MAIN_NAME, Person::getMainName);
+        addColumn(all, ORIGINAL_NAME, Person::getOriginalName);
+        addColumn(all, SURNAME, Person::getSurname);
+        addColumn(all, PATRONUS, Person::getPatronus);
+        addColumn(all, GOVERMENT, Person::getGoverment);
+        addColumn(all, UYEZD, Person::getUyezd);
+        addColumn(all, SELO, Person::getSelo);
+        addColumn(all, FATHER_OCCUPATION, Person::getFatherOccupation);
+        addColumnInt(all, NUMBER, Person::getNumber);
+        addColumn(all, SCHOOL, Person::getSchool);
+        addColumnInt(all, YEAR, Person::getYear);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
         add(grid);
@@ -149,7 +135,8 @@ AboutView extends Div implements BeforeEnterObserver {
 
     public void updateList() {
         List<Person> all = personService.getAll(
-                name.getValue(),
+                mainName.getValue(),
+                originalName.getValue(),
                 surname.getValue(),
                 patronus.getValue(),
                 goverment.getValue(),

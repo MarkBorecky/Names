@@ -12,7 +12,8 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
 	@Query(
 			"select p from Person p " +
-			"where lower(p.name.mainName) like lower(concat('%', :name, '%')) " +
+			"where lower(p.name.mainName) like lower(concat('%', :mainName, '%')) " +
+			"and lower(p.name.originalName) like lower(concat('%', :originalName, '%')) " +
 			"and lower(p.surname) like lower(concat('%', :surname, '%')) " +
 			"and lower(p.patronus) like lower(concat('%', :patronus, '%')) " +
 			"and lower(p.goverment) like lower(concat('%', :goverment, '%')) " +
@@ -24,7 +25,8 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 			"and lower(p.year) like lower(concat('%', :year, '%')) "
 	)
 	List<Person> findAll(
-			@Param("name") String name,
+			@Param("mainName") String mainName,
+			@Param("originalName") String originalName,
 			@Param("surname") String surname,
 			@Param("patronus") String patronus,
 			@Param("goverment") String goverment,

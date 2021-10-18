@@ -60,37 +60,37 @@ public class Person extends AbstractEntity {
         }
 
         public Builder name(String name){
-            this.name = new Name(name);
+            this.name = new Name(name.trim());
             return Builder.this;
         }
 
         public Builder surname(String surname){
-            this.surname = surname;
+            this.surname = surname.trim();
             return Builder.this;
         }
 
         public Builder patronus(String patronus){
-            this.patronus = patronus;
+            this.patronus = patronus.trim();
             return Builder.this;
         }
 
         public Builder goverment(String goverment){
-            this.goverment = goverment;
+            this.goverment = goverment.trim();
             return Builder.this;
         }
 
         public Builder uyezd(String uyezd){
-            this.uyezd = uyezd;
+            this.uyezd = uyezd.trim();
             return Builder.this;
         }
 
         public Builder selo(String selo){
-            this.selo = selo;
+            this.selo = selo.trim();
             return Builder.this;
         }
 
         public Builder fatherOccupation(String fatherOccupation){
-            this.fatherOccupation = fatherOccupation;
+            this.fatherOccupation = fatherOccupation.trim();
             return Builder.this;
         }
 
@@ -100,7 +100,7 @@ public class Person extends AbstractEntity {
         }
 
         public Builder school(String school){
-            this.school = school;
+            this.school = school.trim();
             return Builder.this;
         }
 
@@ -196,6 +196,10 @@ public class Person extends AbstractEntity {
 
     public String getMainName() {
         return name.getMainName();
+    }
+
+    public String getOriginalName() {
+        return name.getOriginalName();
     }
 
     public String getNameToString() {

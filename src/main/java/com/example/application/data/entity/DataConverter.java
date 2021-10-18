@@ -108,6 +108,13 @@ public class DataConverter {
                 .collect(Collectors.toList());
     }
 
+    public static List<String> transferNames(List<Name> names) {
+        return names.stream()
+                .map(DataConverter::convert)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
     private static List<String> convert(Person person) {
         var list = new ArrayList<String>();
         list.add(String.valueOf(person.get_id()));
@@ -121,6 +128,13 @@ public class DataConverter {
         list.add(String.valueOf(person.getNumber()));
         list.add(person.getSchool());
         list.add(String.valueOf(person.getYear()));
+        return list;
+    }
+
+    private static List<String> convert(Name name) {
+        var list = new ArrayList<String>();
+        list.add(name.getMainName());
+        list.add(name.getOriginalName());
         return list;
     }
 

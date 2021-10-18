@@ -27,7 +27,8 @@ public class PersonService extends CrudService<Person, Integer> {
     }
 
 	public List<Person> getAll(
-	        String name,
+	        String mainName,
+	        String originalName,
             String surname,
             String patronus,
             String goverment,
@@ -38,7 +39,7 @@ public class PersonService extends CrudService<Person, Integer> {
             String school,
             String year) {
         return repository.findAll(
-                name, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, year);
+                mainName, originalName, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, year);
 	}
 
 	public void saveAll(List<Person> data) {
