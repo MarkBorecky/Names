@@ -21,5 +21,6 @@
     .list-view.editing .toolbar,
     .list-view.editing .contact-grid {
         display: none;
+        font-size: 10px;
     }
 }

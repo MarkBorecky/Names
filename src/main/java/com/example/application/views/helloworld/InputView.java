@@ -19,28 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.List;
 
-@PageTitle("Hello World")
-@Route(value = "hello", layout = MainLayout.class)
+@PageTitle("Wgraj plik")
+@Route(value = "input", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
-public class HelloWorldView extends HorizontalLayout {
+public class InputView extends HorizontalLayout {
 
     private PersonService personService;
 
-    private TextField name;
-    private Button sayHello;
-
-    public HelloWorldView(@Autowired PersonService personService) {
-        addClassName("hello-world-view");
-        name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        add(name, sayHello);
-        setVerticalComponentAlignment(Alignment.END, name, sayHello);
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + name.getValue());
-        });
-
+    public InputView(@Autowired PersonService personService) {
         MemoryBuffer memoryBuffer = new MemoryBuffer();
-
         Upload upload = new Upload(memoryBuffer);
         upload.addFinishedListener(e -> {
             var inputStream = memoryBuffer.getInputStream();
@@ -51,10 +38,8 @@ public class HelloWorldView extends HorizontalLayout {
                 Notification.show(String.format("%s linii", read.size()));
                 personService.deleteAll();
                 personService.saveAll(read);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            } catch (InvalidFormatException invalidFormatException) {
-                invalidFormatException.printStackTrace();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
         add(upload);

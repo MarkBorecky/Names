@@ -1,7 +1,7 @@
 package com.example.application.views;
 
-import com.example.application.views.about.AboutView;
-import com.example.application.views.helloworld.HelloWorldView;
+import com.example.application.views.about.Table;
+import com.example.application.views.helloworld.InputView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * The main view is a top-level placeholder for other views.
  */
-@PWA(name = "My App", shortName = "My App", enableInstallPrompt = false)
+@PWA(name = "Imiona", shortName = "Imiona", enableInstallPrompt = false)
 @Push
 @Theme(themeFolder = "myapp")
 @PageTitle("Main")
@@ -74,7 +74,7 @@ public class MainLayout extends AppLayout {
     }
 
     private Component createDrawerContent() {
-        H2 appName = new H2("My App");
+        H2 appName = new H2("Imiona");
         appName.addClassNames("flex", "items-center", "h-xl", "m-0", "px-m", "text-m");
 
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section(appName,
@@ -100,8 +100,8 @@ public class MainLayout extends AppLayout {
 
     private List<RouterLink> createLinks() {
         MenuItemInfo[] menuItems = new MenuItemInfo[]{ //
-                new MenuItemInfo("Hello World", "la la-globe", HelloWorldView.class), //
-                new MenuItemInfo("About", "la la-file", AboutView.class), //
+                new MenuItemInfo("Wgraj plik", "la la-globe", InputView.class), //
+                new MenuItemInfo("Tabela", "la la-file", Table.class), //
         };
         List<RouterLink> links = new ArrayList<>();
         for (MenuItemInfo menuItemInfo : menuItems) {
