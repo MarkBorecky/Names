@@ -34,8 +34,8 @@ import static com.example.application.utils.PersonUtils.getNumberDistinctValues;
 import static com.example.application.utils.PersonUtils.getNumberDistinctValues2;
 import static com.example.application.utils.Headers.*;
 
-@PageTitle("About")
-@Route(value = "about", layout = MainLayout.class)
+@PageTitle("Tabela")
+@Route(value = "tabela", layout = MainLayout.class)
 public class Table extends Div {
 
     final private Grid<Person> grid = new Grid<>();
