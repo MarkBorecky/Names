@@ -13,4 +13,6 @@ public class Headers {
     public static final String NUMBER = "Numer";
     public static final String SCHOOL = "Szkoła";
     public static final String YEAR = "Rok";
+    public static final String YEAR_FROM = "Od Roku";
+    public static final String YEAR_UNTIL = "Do Roku";
 }

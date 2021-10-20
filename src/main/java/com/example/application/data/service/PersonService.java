@@ -37,9 +37,10 @@ public class PersonService extends CrudService<Person, Integer> {
             String fatherOccupation,
             String number,
             String school,
-            String year) {
+            Integer yearFrom,
+            Integer yearUntil) {
         return repository.findAll(
-                mainName, originalName, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, year);
+                mainName, originalName, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, yearFrom, yearUntil);
 	}
 
 	public void saveAll(List<Person> data) {

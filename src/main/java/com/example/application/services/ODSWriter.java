@@ -2,6 +2,7 @@ package com.example.application.services;
 
 import com.example.application.data.entity.DataConverter;
 import com.example.application.data.entity.Person;
+import com.example.application.utils.Headers;
 import com.example.application.utils.PersonUtils;
 import com.github.miachm.sods.Sheet;
 import com.github.miachm.sods.SpreadSheet;
@@ -43,8 +44,8 @@ public class ODSWriter implements ExcelFileWriter {
         var rows = names.size() + 1;
         var sheet = new Sheet("Imiona", rows, columns);
         var header = new ArrayList<String>();
-        header.add("Główne imię");
-        header.add("Originalne imię");
+        header.add(Headers.MAIN_NAME);
+        header.add(Headers.ORIGINAL_NAME);
         header.addAll(DataConverter.transferNames(names));
         sheet.getDataRange().setValues(header.toArray());
         return sheet;

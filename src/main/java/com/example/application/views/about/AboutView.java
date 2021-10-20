@@ -43,27 +43,29 @@ AboutView extends Div implements BeforeEnterObserver {
     final private PersonService personService;
     final private ExcelFileWriter writer;
 
-    private int results = 0;
+    final private Form myForm = new Form();
 
-    Map<String, Long> resultMap = new HashMap();
+//    private int results = 0;
+//
+//    Map<String, Long> resultMap = new HashMap();
+//
+//    TextField mainName = new TextField(MAIN_NAME);
+//    TextField originalName = new TextField(ORIGINAL_NAME);
+//    TextField surname = new TextField(SURNAME);
+//    TextField patronus = new TextField(PATRONUS);
+//    TextField goverment = new TextField(GOVERMENT);
+//    TextField uyezd = new TextField(UYEZD);
+//    TextField selo = new TextField(SELO);
+//    TextField fatherOccupation = new TextField(FATHER_OCCUPATION);
+//    TextField number = new TextField(NUMBER);
+//    TextField school = new TextField(SCHOOL);
+//    TextField rok = new TextField(YEAR);
+//
+//    String resultString = "Znaleziono wyników %d";
+//    H3 resultText = new H3(String.format(resultString, results));
+//    VerticalLayout form = new VerticalLayout();
+//    boolean formVisible = false;
 
-    TextField mainName = new TextField(MAIN_NAME);
-    TextField originalName = new TextField(ORIGINAL_NAME);
-    TextField surname = new TextField(SURNAME);
-    TextField patronus = new TextField(PATRONUS);
-    TextField goverment = new TextField(GOVERMENT);
-    TextField uyezd = new TextField(UYEZD);
-    TextField selo = new TextField(SELO);
-    TextField fatherOccupation = new TextField(FATHER_OCCUPATION);
-    TextField number = new TextField(NUMBER);
-    TextField school = new TextField(SCHOOL);
-    TextField rok = new TextField(YEAR);
-
-    String resultString = "Znaleziono wyników %d";
-    H3 resultText = new H3(String.format(resultString, results));
-
-    VerticalLayout form = new VerticalLayout();
-    boolean formVisible = false;
     Button button = new Button();
 
     public AboutView(@Autowired PersonService personService) {
@@ -78,15 +80,13 @@ AboutView extends Div implements BeforeEnterObserver {
     }
 
     private void setButtonSearchForm() {
-        button = new Button("formularz", e -> {
-            form.setVisible((formVisible = !formVisible));
-            Notification.show("form visible = " + formVisible);
-        });
+        button = new Button("formularz", e -> myForm.toggleVisible());
         add(button);
     }
 
     private void configureSearchForm() {
-        addSearchInput(mainName, originalName, surname, patronus, goverment, uyezd, selo, fatherOccupation, number, school, rok);
+        addSearchInput(myForm.mainName, myForm.originalName, myForm.surname, myForm.patronus, myForm.goverment,
+                myForm.uyezd, myForm.selo, myForm.fatherOccupation, myForm.number, myForm.school, myForm.number);
     }
 
     private void configureGrid(List<Person> all) {
@@ -135,17 +135,18 @@ AboutView extends Div implements BeforeEnterObserver {
 
     public void updateList() {
         List<Person> all = personService.getAll(
-                mainName.getValue(),
-                originalName.getValue(),
-                surname.getValue(),
-                patronus.getValue(),
-                goverment.getValue(),
-                uyezd.getValue(),
-                selo.getValue(),
-                fatherOccupation.getValue(),
-                number.getValue(),
-                school.getValue(),
-                rok.getValue()
+                myForm.mainName.getValue(),
+                myForm.originalName.getValue(),
+                myForm.surname.getValue(),
+                myForm.patronus.getValue(),
+                myForm.goverment.getValue(),
+                myForm.uyezd.getValue(),
+                myForm.selo.getValue(),
+                myForm.fatherOccupation.getValue(),
+                myForm.number.getValue(),
+                myForm.school.getValue(),
+                0,
+                1999
         );
         setResultText(all.size());
         people = all;
@@ -155,27 +156,27 @@ AboutView extends Div implements BeforeEnterObserver {
     private void updateGrid(List<Person> all) {
 
         grid.setItems(all);
-        resultMap.put("Imię", getNumberDistinctValues(all, Person::getMainName));
-        resultMap.put("Nazwisko", getNumberDistinctValues(all, Person::getSurname));
-        resultMap.put("Imię ojca", getNumberDistinctValues(all, Person::getPatronus));
-        resultMap.put("Gubernia", getNumberDistinctValues(all, Person::getGoverment));
-        resultMap.put("Ujazd", getNumberDistinctValues(all, Person::getUyezd));
-        resultMap.put("Sioło", getNumberDistinctValues(all, Person::getSelo));
-        resultMap.put("Zawód", getNumberDistinctValues(all, Person::getFatherOccupation));
-        resultMap.put("Numer", getNumberDistinctValues2(all, Person::getNumber));
-        resultMap.put("Szkoła", getNumberDistinctValues(all, Person::getSchool));
-        resultMap.put("Rok", getNumberDistinctValues2(all, Person::getYear));
-        grid.getColumns().forEach(x -> x.setHeader(String.format("%s (%d)", x.getKey(), resultMap.get(x.getKey()))));
+        myForm.resultMap.put("Imię", getNumberDistinctValues(all, Person::getMainName));
+        myForm.resultMap.put("Nazwisko", getNumberDistinctValues(all, Person::getSurname));
+        myForm.resultMap.put("Imię ojca", getNumberDistinctValues(all, Person::getPatronus));
+        myForm.resultMap.put("Gubernia", getNumberDistinctValues(all, Person::getGoverment));
+        myForm.resultMap.put("Ujazd", getNumberDistinctValues(all, Person::getUyezd));
+        myForm.resultMap.put("Sioło", getNumberDistinctValues(all, Person::getSelo));
+        myForm.resultMap.put("Zawód", getNumberDistinctValues(all, Person::getFatherOccupation));
+        myForm.resultMap.put("Numer", getNumberDistinctValues2(all, Person::getNumber));
+        myForm.resultMap.put("Szkoła", getNumberDistinctValues(all, Person::getSchool));
+        myForm.resultMap.put("Rok", getNumberDistinctValues2(all, Person::getYear));
+        grid.getColumns().forEach(x -> x.setHeader(String.format("%s (%d)", x.getKey(), myForm.resultMap.get(x.getKey()))));
     }
 
     private void setResultText(int size) {
-        resultText.setText(String.format(resultString, size));
+        myForm.resultText.setText(String.format(myForm.resultString, size));
     }
 
     private void addSearchInput(TextField... fields) {
         var layout = new HorizontalLayout();
         layout.addClassName("contact-form");
-        form.add(resultText);
+        myForm.form.add(myForm.resultText);
         var i = 0;
         for (TextField field : fields) {
             field.setClearButtonVisible(true);
@@ -185,13 +186,13 @@ AboutView extends Div implements BeforeEnterObserver {
             layout.add(field);
             i++;
             if (i == 5) {
-                form.add(layout);
+                myForm.form.add(layout);
                 layout = new HorizontalLayout();
             }
         }
-        form.add(layout);
+        myForm.form.add(layout);
         createDownloadButton();
-        add(form);
+        add(myForm.form);
     }
 
     private void createDownloadButton() {

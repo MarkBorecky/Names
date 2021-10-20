@@ -22,7 +22,8 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 			"and lower(p.fatherOccupation) like lower(concat('%', :fatherOccupation, '%')) " +
 			"and lower(p.number) like lower(concat('%', :number, '%')) " +
 			"and lower(p.school) like lower(concat('%', :school, '%')) " +
-			"and lower(p.year) like lower(concat('%', :year, '%')) "
+			"and p.year >= :yearFrom " +
+			"and p.year <= :yearUntil "
 	)
 	List<Person> findAll(
 			@Param("mainName") String mainName,
@@ -35,5 +36,6 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 			@Param("fatherOccupation") String fatherOccupation,
 			@Param("number") String number,
 			@Param("school") String school,
-			@Param("year") String year);
+			@Param("yearFrom") Integer yearFrom,
+			@Param("yearUntil") Integer yearUntil);
 }
