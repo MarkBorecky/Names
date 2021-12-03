@@ -20,7 +20,7 @@ public class XLSReader implements FileReader {
         return DataConverter.getDataDaoList(values);
     }
 
-    private Object[][] getValues(InputStream inputStream, DataFormatter dataFormatter) throws IOException {
+    private Object[][] getValues(InputStream inputStream, DataFormatter dataFormatter) {
         Object[][] values;
         try (var workbook = WorkbookFactory.create(inputStream)) {
             var sheet = workbook.getSheetAt(0);
@@ -37,7 +37,7 @@ public class XLSReader implements FileReader {
                 }
                 irow++;
             }
-        } catch (InvalidFormatException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException();
         }
         return values;
